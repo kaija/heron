@@ -1,0 +1,27 @@
+{
+  "name": "heron",
+  "description": "Heron Key/Value REST API server",
+  "version": "0.0.1",
+  "author": {
+    "name": "Kaija Chang",
+    "email": "kaija.chang@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Kaija Chang",
+      "email": "kaija.chang@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "express": "*",
+    "redis": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kaija/heron"
+  },
+  "main": "index",
+  "engines": {
+    "node": "*"
+  }
+}
