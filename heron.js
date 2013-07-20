@@ -10,13 +10,29 @@ redis_cli.on("connect", function(){
     console.log("Connected to local redis server!.");
 });
 
-app.get('/heron/v1/query', function(req, res){
+app.get('/heron/v1/query_id', function(req, res){
     console.log(req.headers.id);
     console.log(req);
     res.send('hello world');
 });
 
+app.get('/heron/v1/query_id_key', function(req, res){
+    console.log(req);
+    res.send(200);
+});
+
+
 app.post('/heron/v1/insert', function(req, res){
+    console.log(req);
+    res.send(200);
+});
+
+app.delete('/heron/v1/delete_id', function(req, res){
+    console.log(req);
+    res.send(200);
+});
+
+app.delete('/heron/v1/delete_id_key', function(req, res){
     console.log(req);
     res.send(200);
 });
