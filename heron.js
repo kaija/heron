@@ -1,100 +1,114 @@
 var express = require('express');
-var app = express();
+var https = require('https');
+var fs = require('fs');
+
 var redis = require("redis"),
 redis_cli = redis.createClient();
 
 redis_cli.on("error", function (err) {
-    console.log("error event - " + redis_cli.host + ":" + redis_cli.port + " - " + err);
+  console.log("error event - " + redis_cli.host + ":" + redis_cli.port + " - " + err);
 });
 
 redis_conn = false;
 
 redis_cli.on("connect", function(){
-    console.log("Connected to local redis server!.");
-    redis_conn = true;
+  console.log("Connected to local redis server!.");
+  redis_conn = true;
 });
 
-app.use(express.bodyParser());
+var register = function(app){
+  app.use(express.bodyParser());
 
-app.get('/heron/v1/query_id', function(req, res){
-  if(redis_conn){
-    if(req.query.id != null){
-      console.log("Query with id [" + req.query.id + "]");
-      redis_cli.hkeys(req.query.id, function(err, obj){
-        res.send(200, obj);
-      });
-    }else{
-      res.send(400, "Missing parameter...");
-    }
-  }else{
-    res.send(500, "Database not ready!");
-  }
-});
-
-app.get('/heron/v1/query_id_key', function(req, res){
-  if(redis_conn){
-    if(req.query.id != null && req.query.time != null){
-      console.log("Query with id [" + req.query.id + "]  key [" + req.query.time +"]" );
-      redis_cli.hmget(req.query.id, req.query.time ,function(err, obj){
-        res.send(200, obj);
-      });
-    }else{
-      res.send(400, "Missing parameter...");
-    }
-  }else{
-    res.send(500, "Database not ready!");
-  }
-});
-
-
-app.post('/heron/v1/insert', function(req, res){
-  if(redis_conn){
-    if(req.body.id != null && req.body.val != null){
-      var mkey;
-      if(req.body.key != null){
-        mkey = req.body.key;
+  app.get('/heron/v1/query_id', function(req, res){
+    if(redis_conn){
+      if(req.query.id != null){
+        console.log("Query with id [" + req.query.id + "]");
+        redis_cli.hkeys(req.query.id, function(err, obj){
+          res.send(200, obj);
+        });
       }else{
-        mkey = new Date().getTime();
+        res.send(400, "Missing parameter...");
       }
-      console.log("Insert with id [" + req.body.id + "]  key [" + mkey +"] val ["  + req.body.val + "]");
-      redis_cli.hmset(req.body.id, mkey, req.body.val);
-      res.send(200);
     }else{
-      res.send(400, "Missing parameter...");
+      res.send(500, "Database not ready!");
     }
-  }else{
-    res.send(500, "Database not ready!");
-  }
-});
+  });
 
-app.delete('/heron/v1/delete_id', function(req, res){
-  if(redis_conn){
-    if(req.query.id != null){
-      console.log("Delete id all value [" + req.query.id + "]");
-      redis_cli.del(req.query.id, function(err, obj){
+  app.get('/heron/v1/query_id_key', function(req, res){
+    if(redis_conn){
+      if(req.query.id != null && req.query.time != null){
+        console.log("Query with id [" + req.query.id + "]  key [" + req.query.time +"]" );
+        redis_cli.hmget(req.query.id, req.query.time ,function(err, obj){
+          res.send(200, obj);
+        });
+      }else{
+        res.send(400, "Missing parameter...");
+      }
+    }else{
+      res.send(500, "Database not ready!");
+    }
+  });
+
+
+  app.post('/heron/v1/insert', function(req, res){
+    if(redis_conn){
+      if(req.body.id != null && req.body.val != null){
+        var mkey;
+        if(req.body.key != null){
+          mkey = req.body.key;
+        }else{
+          mkey = new Date().getTime();
+        }
+        console.log("Insert with id [" + req.body.id + "]  key [" + mkey +"] val ["  + req.body.val + "]");
+        redis_cli.hmset(req.body.id, mkey, req.body.val);
         res.send(200);
-      });
+      }else{
+        res.send(400, "Missing parameter...");
+      }
     }else{
-      res.send(400, "Missing parameter...");
+      res.send(500, "Database not ready!");
     }
-  }else{
-    res.send(500, "Database not ready!");
-  }
-});
+  });
 
-app.delete('/heron/v1/delete_id_key', function(req, res){
-  if(redis_conn){
-    if(req.query.id != null && req.query.time != null){
-      console.log("Delete id  [" + req.query.id + "] time [" + req.query.time +"]");
-      redis_cli.hdel(req.query.id, req.query.time, function(err, obj){
-        res.send(200);
-      });
+  app.delete('/heron/v1/delete_id', function(req, res){
+    if(redis_conn){
+      if(req.query.id != null){
+        console.log("Delete id all value [" + req.query.id + "]");
+        redis_cli.del(req.query.id, function(err, obj){
+          res.send(200);
+        });
+      }else{
+        res.send(400, "Missing parameter...");
+      }
     }else{
-      res.send(400, "Missing parameter...");
+      res.send(500, "Database not ready!");
     }
-  }else{
-    res.send(500, "Database not ready!");
-  }
-});
+  });
 
-app.listen(9999);
+  app.delete('/heron/v1/delete_id_key', function(req, res){
+    if(redis_conn){
+      if(req.query.id != null && req.query.time != null){
+        console.log("Delete id  [" + req.query.id + "] time [" + req.query.time +"]");
+        redis_cli.hdel(req.query.id, req.query.time, function(err, obj){
+          res.send(200);
+         });
+      }else{
+        res.send(400, "Missing parameter...");
+      }
+    }else{
+      res.send(500, "Database not ready!");
+    }
+  });
+};
+
+
+
+var http = express();
+register(http);
+http.listen(80);
+
+var options = {
+    key: fs.readFileSync("./ssl.key"),
+    cert: fs.readFileSync("./ssl.crt")
+};
+https.createServer(options, http).listen(443);
