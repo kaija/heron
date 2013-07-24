@@ -50,9 +50,14 @@ app.get('/heron/v1/query_id_key', function(req, res){
 app.post('/heron/v1/insert', function(req, res){
   if(redis_conn){
     if(req.body.id != null && req.body.val != null){
-      var time = new Date().getTime();
-      console.log("Insert with id [" + req.body.id + "]  time [" + time +"] val ["  + req.body.val + "]");
-      redis_cli.hmset(req.body.id, time, req.body.val);
+      var mkey;
+      if(req.body.key != null){
+        mkey = req.body.key;
+      }else{
+        mkey = new Date().getTime();
+      }
+      console.log("Insert with id [" + req.body.id + "]  key [" + mkey +"] val ["  + req.body.val + "]");
+      redis_cli.hmset(req.body.id, mkey, req.body.val);
       res.send(200);
     }else{
       res.send(400, "Missing parameter...");
