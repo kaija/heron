@@ -16,8 +16,52 @@ redis_cli.on("connect", function(){
   redis_conn = true;
 });
 
+
 var register = function(app){
   app.use(express.bodyParser());
+
+  app.get('/heron/v1/query_id_all', function(req, res){
+    if(redis_conn){
+      if(req.query.id != null){
+        console.log("Query all key value with id [" + req.query.id + "]");
+        redis_cli.hkeys(req.query.id, function(err, obj){
+          var query = [];
+          for(var i in obj){
+            var key = obj[i];
+            query.push(key);
+          }
+          var result = [];
+          redis_cli.hmget(req.query.id, query, function(err, val){
+            for(var i in obj){
+              var key = obj[i];
+              var va  = val[i];
+              result.push({"key":key, "val":va});
+            }
+            res.send(200, result);
+          });
+        });
+      }else{
+        res.send(400, "Missing parameter...");
+      }
+    }else{
+      res.send(500, "Database not ready!");
+    }
+  });
+
+  app.get('/heron/v1/query_id_key', function(req, res){
+    if(redis_conn){
+      if(req.query.id != null && req.query.key != null){
+        console.log("Query with id [" + req.query.id + "]  key [" + req.query.key +"]" );
+        redis_cli.hmget(req.query.id, req.query.key ,function(err, obj){
+          res.send(200, obj);
+        });
+      }else{
+        res.send(400, "Missing parameter...");
+      }
+    }else{
+      res.send(500, "Database not ready!");
+    }
+  });
 
   app.get('/heron/v1/query_id', function(req, res){
     if(redis_conn){
@@ -33,22 +77,6 @@ var register = function(app){
       res.send(500, "Database not ready!");
     }
   });
-
-  app.get('/heron/v1/query_id_key', function(req, res){
-    if(redis_conn){
-      if(req.query.id != null && req.query.time != null){
-        console.log("Query with id [" + req.query.id + "]  key [" + req.query.time +"]" );
-        redis_cli.hmget(req.query.id, req.query.time ,function(err, obj){
-          res.send(200, obj);
-        });
-      }else{
-        res.send(400, "Missing parameter...");
-      }
-    }else{
-      res.send(500, "Database not ready!");
-    }
-  });
-
 
   app.post('/heron/v1/insert', function(req, res){
     if(redis_conn){
@@ -87,9 +115,9 @@ var register = function(app){
 
   app.delete('/heron/v1/delete_id_key', function(req, res){
     if(redis_conn){
-      if(req.query.id != null && req.query.time != null){
-        console.log("Delete id  [" + req.query.id + "] time [" + req.query.time +"]");
-        redis_cli.hdel(req.query.id, req.query.time, function(err, obj){
+      if(req.query.id != null && req.query.key != null){
+        console.log("Delete id  [" + req.query.id + "] key [" + req.query.key +"]");
+        redis_cli.hdel(req.query.id, req.query.key, function(err, obj){
           res.send(200);
          });
       }else{
