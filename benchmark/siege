@@ -1,0 +1,35 @@
+===========================================
+Single cluster
+
+Transactions:             209188 hits
+Availability:              99.51 %
+Elapsed time:              54.88 secs
+Data transferred:          20.55 MB
+Response time:              0.03 secs
+Transaction rate:        3811.73 trans/sec
+Throughput:             0.37 MB/sec
+Concurrency:               96.57
+Successful transactions:      209188
+Failed transactions:            1034
+Longest transaction:            0.12
+Shortest transaction:           0.00
+
+===========================================
+
+Intel(R) Core(TM) i7-2600 CPU @ 3.40GHz
+Cluster
+
+Transactions:             190296 hits
+Availability:              99.45 %
+Elapsed time:              27.83 secs
+Data transferred:          18.69 MB
+Response time:              0.01 secs
+Transaction rate:        6837.80 trans/sec
+Throughput:             0.67 MB/sec
+Concurrency:               49.37
+Successful transactions:      190296
+Failed transactions:            1047
+Longest transaction:            1.01
+Shortest transaction:           0.00
+
+===========================================
