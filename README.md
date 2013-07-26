@@ -6,7 +6,19 @@ It's based on Redis database and node.js.
 
 [website]
 
+
+Howto
+-----
+
+1. edit the absolute path of https certificate and private key.
+2. make sure bind port is not in use.
+3. copy utils/heron_init_script to /etc/init.d/heron
+4. execute sudo /etc/init.d/heron start / stop
+
+Good Luck. ^^
+
 Example:
+-----
 
 * Insert a id with value 12345
 

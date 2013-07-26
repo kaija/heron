@@ -136,7 +136,7 @@ register(http);
 http.listen(80);
 
 var options = {
-    key: fs.readFileSync("./ssl.key"),
-    cert: fs.readFileSync("./ssl.crt")
+    key: fs.readFileSync("/home/kaija/source/heron/heron/ssl.key"),
+    cert: fs.readFileSync("/home/kaija/source/heron/heron/ssl.crt")
 };
 https.createServer(options, http).listen(443);

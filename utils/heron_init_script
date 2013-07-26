@@ -4,17 +4,32 @@
 # as it does use of the /proc filesystem.
 
 EXEC=/usr/local/bin/node
-JSPATH=/home/kaija/heron/heron.js
+JSPATH=/home/kaija/source/heron/heron/heron.js
 
 PIDFILE=/var/run/heron.pid
 
 case "$1" in
     start)
             echo "Starting Heron server..."
-            $EXEC $JSPATH
+            nohup $EXEC $JSPATH 1 > /dev/null 2>&1 &
+            echo "$!" > $PIDFILE
         ;;
     stop)
-            echo "Not support yet"
+            if [ ! -f $PIDFILE ]
+            then
+                echo "$PIDFILE does not exist, maybe process not running"
+            else
+                echo "Stopping Heron ..."
+                PID=$(cat $PIDFILE)
+                kill -9 $PID
+                while [ -x /proc/$PIDFILE ]
+                do
+                    echo "Waiting Heron shutdown ..."
+                    sleep 1
+                done
+                rm $PIDFILE
+                echo "Heron Stopped"
+            fi
         ;;
     *)
         echo "Please use start or stop as first argument"
