@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# Simple Redis init.d script conceived to work on Linux systems
+# as it does use of the /proc filesystem.
+
+EXEC=/usr/local/bin/node
+JSPATH=/home/kaija/heron/heron.js
+
+PIDFILE=/var/run/heron.pid
+
+case "$1" in
+    start)
+            echo "Starting Heron server..."
+            $EXEC $JSPATH
+        ;;
+    stop)
+            echo "Not support yet"
+        ;;
+    *)
+        echo "Please use start or stop as first argument"
+        ;;
+esac
