@@ -50,5 +50,7 @@ curl -i -X DELETE --dump-header - "http://localhost/heron/v1/delete_id_key?id=ka
 
 curl -i -X DELETE --dump-header - "http://localhost/heron/v1/delete_id?id=kaija"
 
+* Delete methodoverride
+curl -i -X POST --dump-header - "http://localhost/heron/v1/delete_id?id=kaija" -d "_method=delete"
 
 [website]: https://github.com/kaija/heron

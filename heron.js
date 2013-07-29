@@ -1,4 +1,8 @@
 var cluster = require('cluster');
+
+HTTP_PORT = 80;
+HTTPS_PORT = 443;
+
 if(cluster.isMaster) {
 
   var cpu = require('os').cpus().length;
@@ -28,7 +32,7 @@ if(cluster.isMaster) {
 
   var register = function(app){
     app.use(express.bodyParser());
-
+    app.use(express.methodOverride());
     app.get('/heron/v1/query_id_all', function(req, res){
       if(redis_conn){
         if(req.query.id != null){
@@ -142,12 +146,12 @@ if(cluster.isMaster) {
 
   var http = express();
   register(http);
-  http.listen(80);
+  http.listen(HTTP_PORT);
 
   var options = {
     key: fs.readFileSync("/home/kaija/source/heron/heron/ssl.key"),
     cert: fs.readFileSync("/home/kaija/source/heron/heron/ssl.crt")
   };
-  https.createServer(options, http).listen(443);
+  https.createServer(options, http).listen(HTTPS_PORT);
 
 }
