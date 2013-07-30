@@ -33,6 +33,14 @@ if(cluster.isMaster) {
   var register = function(app){
     app.use(express.bodyParser());
     app.use(express.methodOverride());
+    app.set('views', __dirname + '/views');
+    app.engine('html', require('ejs').renderFile);
+
+
+    app.get('/', function(req, res){
+        res.render('index.html');
+    });
+
     app.get('/heron/v1/query_id_all', function(req, res){
       if(redis_conn){
         if(req.query.id != null){
